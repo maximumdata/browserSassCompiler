@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js" charset="utf-8"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    .left, .right {
+      float: left;
+      width: 50%;
+    }
+    form {
+
+    }
+    form textarea {
+      height: 85vh;
+      width: calc(100% - 20px);
+      margin: 0 10px 0 0;
+      font-family: monospace;
+      font-size: 16px;
+    }
+    #output {
+      height: 85vh;
+      overflow: auto;
+      background: lightgrey;
+      font-family: monospace;
+      font-size: 16px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      border: 1px solid black;
+      padding: 2px;
+    }
+    .heading {
+      margin: 0;
+    }
+    </style>
+</head>
+<body>
+  <div class="left">
+
+  <h1 class="heading">input</h1>
+  <form id='form' action="http://localhost:8080/api/projects/sass" method="post">
+    <textarea name="sass" id="sass" placeholder="Enter your sass here!"></textarea>
+    <br>
+    <input id="sub" type="submit">
+  </form>
+</div>
+<div class="right">
+
+  <h1 class="heading">output</h1>
+  <div id="output">
+
+  </div>
+</div>
+<script>
+  $(document).ready(function(){
+    $('#form').submit(function(event) {
+      event.preventDefault();
+      var $this = $(this);
+      var data = {
+        sass: $('#sass').val()
+      }
+      $.ajax({
+        url: "http://alloy.divshot.com/compile",
+        type: "POST",
+        dataType: "text",
+        data: {
+          compress: false,
+          type: "sass",
+          source: $('#sass').val()
+        }
+
+      }).done(function(res) {
+        $('#output').text(res);
+      }).fail(function(jqXHR, status) {
+        $('#output').text('Uh oh! There was an error compiling your sass. Check your syntax/indentation and try again!');
+      });
+    });
+  });
+</script>
+</body>
+</html>
